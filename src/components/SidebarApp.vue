@@ -66,7 +66,7 @@ const searchQuery = computed(() => {
     if (isNaN(parseFloat(item)) && item.length) {
       const name = item[0].toUpperCase() + item.toLowerCase().slice(1)
       nameQuery += `username=${name}&`
-    } else {
+    } else if (!isNaN(parseFloat(item)) && item.length) {
       idQuery += `id=${item}&`
     }
   })
