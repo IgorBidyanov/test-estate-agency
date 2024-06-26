@@ -63,7 +63,7 @@ const searchQuery = computed(() => {
   let idQuery = ''
   let nameQuery = ''
   arr.forEach((item) => {
-    if (isNaN(parseFloat(item))) {
+    if (isNaN(parseFloat(item)) && item.length) {
       const name = item[0].toUpperCase() + item.toLowerCase().slice(1)
       nameQuery += `username=${name}&`
     } else {
