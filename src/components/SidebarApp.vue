@@ -58,31 +58,19 @@ const itemsPerPage = computed(() => store.state.employees.itemsPerPage)
 const choosenEmployee = computed(() => store.state.employees.employee)
 const employeeList = computed(() => store.getters['employees/GET_EMPLOYEE_LIST'])
 
-const searchByNameQuery = computed(() => {
-  const arr = searchValue.value.split(/\s*,\s*|\s+/).filter((item) => {
-    if (item.length) {
-      return isNaN(parseFloat(item))
+const searchQuery = computed(() => {
+  const arr = searchValue.value.split(/\s*,\s*|\s+/)
+  let idQuery = ''
+  let nameQuery = ''
+  arr.forEach((item) => {
+    if (isNaN(parseFloat(item))) {
+      const name = item[0].toUpperCase() + item.toLowerCase().slice(1)
+      nameQuery += `username=${name}&`
+    } else {
+      idQuery += `id=${item}&`
     }
   })
-  let str = ''
-  for (let i = 0; i < arr.length; i++) {
-    const name = arr[i][0].toUpperCase() + arr[i].toLowerCase().slice(1)
-    str += `username=${name}&`
-  }
-
-  return str.slice(0, -1)
-})
-
-const searchByIdQuery = computed(() => {
-  const arr = searchValue.value
-    .split(/\s*,\s*|\s+/)
-    .filter((item: string) => !isNaN(parseFloat(item)))
-  let str = ''
-  for (let i = 0; i < arr.length; i++) {
-    str += `id=${arr[i]}&`
-  }
-
-  return str.slice(0, -1)
+  return { searchById: idQuery.slice(0, -1), searchByName: nameQuery.slice(0, -1) }
 })
 
 const totalPages = computed(() => {
@@ -109,11 +97,7 @@ const fetchEmployees = async (payload: IFetchEmployeesPayload) => {
   store.commit('SET_LOADING', false)
 }
 
-const search = debounce(
-  () =>
-    fetchEmployees({ searchById: searchByIdQuery.value, searchByName: searchByNameQuery.value }),
-  1000
-)
+const search = debounce(() => fetchEmployees(searchQuery.value), 1000)
 
 const changePage = async (page: number) => {
   store.commit('employees/SET_CURRENT_PAGE', page)

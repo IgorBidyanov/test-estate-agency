@@ -29,7 +29,7 @@ const props = defineProps<IProps>()
 
 const choosenEmployee = computed(() => store.state.employees.employee)
 
-const chooseEmployee = async () => {
+const chooseEmployee = () => {
   store.commit('employees/SET_EMPLOYEE', props.employee)
 }
 </script>
